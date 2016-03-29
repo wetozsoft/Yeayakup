@@ -135,6 +135,11 @@ if(!sql_query(" DESCRIBE {$g5['wzp_season_table']} ", false)) {
     $db_reload = true;
 }
 
+if (!isset($wzpconfig['pn_max_booking_expire'])) {
+    sql_query(" ALTER TABLE `{$g5['wzp_pension_table']}` ADD `pn_max_booking_expire` smallint(6) NOT NULL DEFAULT '90' ", true);
+    $db_reload = true;
+}
+
 if ($db_reload) { 
     alert("DB를 갱신합니다.", G5_ADMIN_URL.'/wz_booking_admin/wzp_config.php'); 
 } 
@@ -156,8 +161,15 @@ include_once(G5_EDITOR_LIB);
     <tr>
         <th scope="row">예약가능최대일</th>
         <td>
+            최대 <input type="text" name="pn_max_booking_expire" value="<?php echo $wzpconfig['pn_max_booking_expire']; ?>" id="pn_max_booking_expire" required class="frm_input required" size="5">
+            일 까지 예약 가능.
+        </td>
+    </tr>
+    <tr>
+        <th scope="row">숙박가능최대일</th>
+        <td>
             객실 최대 <input type="text" name="pn_max_booking_day" value="<?php echo $wzpconfig['pn_max_booking_day']; ?>" id="pn_max_booking_day" required class="frm_input required" size="5">
-            일 까지 예약가능.
+            박 까지 예약가능.
         </td>
     </tr>
     <tr>

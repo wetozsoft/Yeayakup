@@ -67,6 +67,9 @@ while($row = sql_fetch_array($res)) {
 }
 $cnt_room = count($arr_room);
 sql_free_result($res);
+
+// 최대예약가능일.
+$day_expire = wz_get_addday(G5_TIME_YMD, $wzpconfig['pn_max_booking_expire']);
 ?>
 
 <div class="cal_navi">
@@ -150,8 +153,10 @@ sql_free_result($res);
                         $atag2      = '</a>';    
                         break;
                 }
-
-                if ($vDate <= G5_TIME_YMD) { // 당일 및 이전날짜 예약불가.
+                
+                // 당일 및 이전날짜 예약불가. 
+                // 2016-03-30 : 최대예약가능일 추가.
+                if ($vDate <= G5_TIME_YMD || $vDate > $day_expire) { 
                     $rm_subject = '';
                 } 
                 else {

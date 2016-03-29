@@ -88,6 +88,9 @@ sql_free_result($res);
 if ($sch_day <= G5_TIME_YMD) { // 오늘 이전날짜 예약불가.
     $cnt_room = 0;
 }
+
+// 최대예약가능일.
+$day_expire = wz_get_addday(G5_TIME_YMD, $wzpconfig['pn_max_booking_expire']);
 ?>
 
 <div class="st1-header">
@@ -142,7 +145,10 @@ if ($sch_day <= G5_TIME_YMD) { // 오늘 이전날짜 예약불가.
                 }
 
                 echo '<td class="mini '. $bg_class .'">'.PHP_EOL;
-                if ($vDate <= G5_TIME_YMD) { // 당일 및 이전날짜 예약불가.
+
+                // 당일 및 이전날짜 예약불가.
+                // 2016-03-30 : 최대예약가능일 추가.
+                if ($vDate <= G5_TIME_YMD || $vDate > $day_expire) { 
                     echo '  <span class="closeday">'.$day.'</span>'.PHP_EOL; 
                 } 
                 else {
