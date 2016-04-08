@@ -48,8 +48,6 @@ if($w == '') {
                 set $sql_common  ";
     sql_query($sql);
 
-    $se_ix = wz_sql_insert_id();
-
     goto_url('./wzp_season_list.php');
 
 } else if($w == 'u') {

@@ -175,22 +175,4 @@ function wz_get_hangul_date($date) {
     return preg_replace("/([0-9]{4})([0-9]{2})([0-9]{2})/", "\\1년\\2월\\3일", $date);
 }
 
-function wz_sql_insert_id($link=null) {
-    global $g5;
-
-    if (G5_GNUBOARD_VER >= '5.1.3') { 
-        if(!$link)
-            $link = $g5['connect_db'];
-
-        if(function_exists('mysqli_insert_id') && G5_MYSQLI_USE)
-            return mysqli_insert_id($link);
-        else
-            return mysql_insert_id($link);    
-    } 
-    else { // 구버전 지원
-        mysql_insert_id($link);
-    }
-    
-} 
-
 ?>

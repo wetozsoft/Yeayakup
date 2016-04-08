@@ -91,7 +91,7 @@ if (is_array($_POST['rm_ix'])) {
                                 rms_date    = '$rms_date', 
                                 rms_status  = '예약대기' ";
                         $result = sql_query($query, false);
-                        $rms_ix[] = wz_sql_insert_id();
+                        $rms_ix[] = (!defined('G5_MYSQLI_USE') ? mysql_insert_id() : sql_insert_id());
                         if (!$result) { 
                             $error_msg .= '\"'.$rm['rm_subject'].'\" 의 '.$rms_date.' 날짜가 예약이 이미 완료 되었습니다.\\n';
                             $error++;
@@ -112,7 +112,7 @@ if (is_array($_POST['rm_ix'])) {
                             bkr_todate      = '".wz_get_addday($sch_day, $bkday)."', 
                             bkr_day         = '$bkday' ";
                 $result = sql_query($query, false);
-                $bkr_ix[] = wz_sql_insert_id();
+                $bkr_ix[] = (!defined('G5_MYSQLI_USE') ? mysql_insert_id() : sql_insert_id());
                 if (!$result) {
                     $error_msg .= '객실룸정보 등록오류.\\n';
                     $error++;
@@ -169,7 +169,7 @@ if (!$error) {
         $error++;
     }
     else {
-        $bk_ix = wz_sql_insert_id();
+        $bk_ix = (!defined('G5_MYSQLI_USE') ? mysql_insert_id() : sql_insert_id());
     }
 } 
 

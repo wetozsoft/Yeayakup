@@ -47,8 +47,6 @@ if($w == '') {
                 set $sql_common  ";
     sql_query($sql);
 
-    $rm_ix = wz_sql_insert_id();
-
     goto_url('./wzp_room_list.php');
 
 } else if($w == 'u') {

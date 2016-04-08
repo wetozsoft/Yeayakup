@@ -87,6 +87,7 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
                         } 
                         ?>
                     </select> 일
+                    (예: 04-02 이면 4월02일날 예약을 할경우 시즌에 적용됨)
                 </td>
             </tr>
             <tr>
@@ -116,6 +117,7 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
                         } 
                         ?>
                     </select> 일
+                    (예: 04-10 이면 4월10일날 예약을 할경우 시즌에 적용됨)
                 </td>
             </tr>
             </tbody>

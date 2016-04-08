@@ -65,8 +65,6 @@ if($w == '') {
                 echo $sql;
     sql_query($sql);
 
-    $bk_ix = wz_sql_insert_id();
-
     goto_url('./wzp_booking_list.php');
 
 } else if($w == 'u') {
