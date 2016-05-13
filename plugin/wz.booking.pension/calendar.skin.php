@@ -139,10 +139,12 @@ $day_expire = wz_get_addday(G5_TIME_YMD, $wzpconfig['pn_max_booking_expire']);
                 $atag1 = $atag2 = $liclass = $txheader = '';
                 switch ($nw_status) {
                     case '예약완료':
+                    case '완료':
                         $liclass    = 'done';
                         $txheader   = '<span class="txheader done">완</span>';
                         break;
                     case '예약대기':
+                    case '대기':
                         $liclass    = 'stay';
                         $txheader   = '<span class="txheader stay">대</span>';
                         break;
@@ -169,7 +171,7 @@ $day_expire = wz_get_addday(G5_TIME_YMD, $wzpconfig['pn_max_booking_expire']);
         } 
         echo '</td>'.PHP_EOL;
 
-        if($count==7) { // 토요일이 되면 줄바꾸기 위한 <tr>태그 삽입을 위한 식
+        if ($count==7) { // 토요일이 되면 줄바꾸기 위한 <tr>태그 삽입을 위한 식
             echo '</tr>'.PHP_EOL;
             if($day != $total_day) {
                 echo '<tr height="30" class="date">'.PHP_EOL;

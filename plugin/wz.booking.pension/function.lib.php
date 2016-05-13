@@ -2,6 +2,22 @@
 
 $weekstr = array('일', '월', '화', '수', '목', '금', '토');
 
+// 설정된 시간이 지나면 예약대기건은 자동으로 취소처리.
+$query = "select bk_ix from {$g5['wzp_booking_table']} where bk_status = '대기' and date_add(bk_time, interval ".($wzpconfig['pn_wating_time'] ? $wzpconfig['pn_wating_time'] : 6)." hour) < now() ";
+$res = sql_query($query);
+while($row = sql_fetch_array($res)) { 
+    
+    // 객실예약정보 변경
+    $sql = " update {$g5['wzp_booking_table']} set bk_status = '취소' where bk_ix = '".$row['bk_ix']."' ";
+    sql_query($sql);
+
+    // 객실상태정보 변경
+    $query = "update {$g5['wzp_room_status_table']} set rms_status = '취소' where bk_ix = '".$row['bk_ix']."' ";
+    sql_query($query);
+
+    // 예약자에게 자동취소처리 내역 전송 (mail, sms)
+}
+
 // 한달의 총 날짜 계산 함수
 function wz_max_day($i_month, $i_year) {
     $day = 1;
@@ -62,7 +78,7 @@ function wz_get_addday($day, $add) {
     $y      = substr( $day, 0, 4 );
     $m      = substr( $day, 4, 2 );
     $d      = substr( $day, 6, 2 );
-    return date("Y-m-d", mktime(0,0,0, $m, ($add>=0?$d+$add:$add), $y));
+    return date("Y-m-d", mktime(0,0,0, $m, ($d+$add), $y));
 }
 
  //날짜 사이의 일수를 구한다.

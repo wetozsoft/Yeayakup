@@ -51,6 +51,8 @@ $arr_room   = array();
 $rms_ix     = array();
 $bkr_ix     = array();
 
+$rms_status = '대기'; // 신용카드 결제일경우 '완료' 처리로 예약완료
+
 if (is_array($_POST['rm_ix'])) {
     $cnt_chk = count($_POST['rm_ix']);
     for ($z = 0; $z < $cnt_chk; $z++) {
@@ -77,10 +79,14 @@ if (is_array($_POST['rm_ix'])) {
                     $today_type = wz_get_type($rms_date);
                     $rms_price  += wz_calculate($rmix, $today_type);
                     
-                    $query = " select rms_ix from {$g5['wzp_room_status_table']} where rm_ix = '$rmix' and rms_date = '$rms_date' ";
+                    $query = " select rms_ix, rms_status from {$g5['wzp_room_status_table']} where rm_ix = '$rmix' and rms_date = '$rms_date' ";
                     $rms = sql_fetch($query);
-                    if ($rms['rms_ix']) { // 이미 완료된 날짜라면.
-                        $error_msg .= '\"'.$rm['rm_subject'].'\" 의 '.$rms_date.' 예약이 이미 완료 되었습니다.\\n';
+                    if ($rms['rms_status'] == '완료') { // 이미 예약중인 날짜라면.
+                        $error_msg .= '\"'.$rm['rm_subject'].'\" 의 '.$rms_date.' 예약이 이미 완료된 예약객실로 예약이 불가능합니다.\\n';
+                        $error++;
+                    }
+                    else if ($rms['rms_status'] == '대기') { // 이미 예약중인 날짜라면.
+                        $error_msg .= '\"'.$rm['rm_subject'].'\" 의 '.$rms_date.' 예약이 이미 진행중입니다.\\n';
                         $error++;
                     }
                     else {
@@ -88,12 +94,12 @@ if (is_array($_POST['rm_ix'])) {
                                 rm_ix       = '$rmix', 
                                 rms_year    = '$rms_year', 
                                 rms_month   = '$rms_month', 
-                                rms_date    = '$rms_date', 
-                                rms_status  = '예약대기' ";
+                                rms_date    = '$rms_date',
+                                rms_status  = '$rms_status' ";
                         $result = sql_query($query, false);
                         $rms_ix[] = (!defined('G5_MYSQLI_USE') ? mysql_insert_id() : sql_insert_id());
                         if (!$result) { 
-                            $error_msg .= '\"'.$rm['rm_subject'].'\" 의 '.$rms_date.' 날짜가 예약이 이미 완료 되었습니다.\\n';
+                            $error_msg .= '\"'.$rm['rm_subject'].'\" 의 '.$rms_date.' 날짜 예약오류.\\n';
                             $error++;
                         }
                     }

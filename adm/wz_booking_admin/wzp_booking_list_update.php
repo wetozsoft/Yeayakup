@@ -47,6 +47,10 @@ else if ($_POST['act_button'] == "선택예약완료") {
         // 객실예약정보 변경
         $sql = " update {$g5['wzp_booking_table']} set bk_status = '완료' where bk_ix = '".$bkix."' ";
         sql_query($sql);
+        
+        // 객실상태정보 변경
+        $query = "update {$g5['wzp_room_status_table']} set rms_status = '완료' where bk_ix = '".$bkix."' ";
+        sql_query($query);
     }
 
 }
@@ -63,6 +67,10 @@ else if ($_POST['act_button'] == "선택예약취소") {
         // 객실예약정보 변경
         $sql = " update {$g5['wzp_booking_table']} set bk_status = '취소' where bk_ix = '".$bkix."' ";
         sql_query($sql);
+
+        // 객실상태정보 변경
+        $query = "update {$g5['wzp_room_status_table']} set rms_status = '취소' where bk_ix = '".$bkix."' ";
+        sql_query($query);
     }
 
 }
@@ -79,6 +87,10 @@ else if ($_POST['act_button'] == "선택예약대기") {
         // 객실예약정보 변경
         $sql = " update {$g5['wzp_booking_table']} set bk_status = '대기' where bk_ix = '".$bkix."' ";
         sql_query($sql);
+
+        // 객실상태정보 변경
+        $query = "update {$g5['wzp_room_status_table']} set rms_status = '대기' where bk_ix = '".$bkix."' ";
+        sql_query($query);
     }
 
 }

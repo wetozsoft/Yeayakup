@@ -56,7 +56,7 @@ $query = "select
             rms.rm_ix, min(rms_date) as rms_date, 
             rm.rm_price_adult
           from {$g5['wzp_room_status_table']} as rms inner join {$g5['wzp_room_table']} as rm on rms.rm_ix = rm.rm_ix 
-          where rms_date >= '$sch_day' 
+          where rms_date >= '$sch_day' and (rms.rms_status = '완료' or rms.rms_status = '대기')
           group by rms.rm_ix";
 $res = sql_query($query);
 while($row = sql_fetch_array($res)) { 
@@ -156,9 +156,9 @@ $day_expire = wz_get_addday(G5_TIME_YMD, $wzpconfig['pn_max_booking_expire']);
                 }
                 echo '</td>'.PHP_EOL;
 
-                if($count==7) { // 토요일이 되면 줄바꾸기 위한 <tr>태그 삽입을 위한 식
+                if ($count==7) { // 토요일이 되면 줄바꾸기 위한 <tr>태그 삽입을 위한 식
                     echo '</tr>'.PHP_EOL;
-                    if($day != $total_day) {
+                    if ($day != $total_day) {
                         echo '<tr height="30" class="date">'.PHP_EOL;
                         $count = 0;
                     }

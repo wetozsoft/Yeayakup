@@ -22,7 +22,8 @@ $sql = " update {$g5['wzp_pension_table']}
                 pn_con_refund           = '{$_POST['pn_con_refund']}',
                 pn_max_booking_day      = '".(int)$_POST['pn_max_booking_day']."',
                 pn_max_booking_expire   = '".(int)$_POST['pn_max_booking_expire']."',
-                pn_main_calendar_use    = '".(int)$_POST['pn_main_calendar_use']."'
+                pn_main_calendar_use    = '".(int)$_POST['pn_main_calendar_use']."',
+                pn_wating_time          = '".(int)$_POST['pn_wating_time']."'
                 $sql_common
             ";
 sql_query($sql);

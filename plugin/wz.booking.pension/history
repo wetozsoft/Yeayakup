@@ -1,4 +1,12 @@
 
+ver 0.1.11
+ : wzp_room_status_table 의 rms_status 값을 2글자로 단축. (예약완료 -> 완료, 예약대기 -> 대기, 예약취소 -> 취소)
+ : 잘못된 코드 수정.
+ : 관리자 > 실시간예약관리 > 예약관리목록화면에서 선택예약정보 수정시 상태정보 오류 수정 (Rido 님 제보)
+ : wzp_pension_table pn_wating_time 필드추가, wzp_room_status_table 테이블에 INDEX 추가
+
+ver 0.1.10
+ : 누락된 config.php 파일, img 폴더 추가.
 
 ver 0.1.9
  : 일부 오류 수정.

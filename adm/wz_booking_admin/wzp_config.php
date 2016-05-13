@@ -140,6 +140,12 @@ if (!isset($wzpconfig['pn_max_booking_expire'])) {
     $db_reload = true;
 }
 
+if (!isset($wzpconfig['pn_wating_time'])) { // 2016-05-14 : 예약대기상태 wating 시간.
+    sql_query(" ALTER TABLE `{$g5['wzp_pension_table']}` ADD `pn_wating_time` smallint(6) NOT NULL DEFAULT '6'; ", true);
+    sql_query(" ALTER TABLE `{$g5['wzp_room_status_table']}` ADD INDEX `rms_status` (`rms_status`); ", true);
+    $db_reload = true;
+}
+
 if ($db_reload) { 
     alert("DB를 갱신합니다.", G5_ADMIN_URL.'/wz_booking_admin/wzp_config.php'); 
 } 
@@ -170,6 +176,13 @@ include_once(G5_EDITOR_LIB);
         <td>
             객실 최대 <input type="text" name="pn_max_booking_day" value="<?php echo $wzpconfig['pn_max_booking_day']; ?>" id="pn_max_booking_day" required class="frm_input required" size="5">
             박 까지 예약가능.
+        </td>
+    </tr>
+    <tr>
+        <th scope="row">예약대기시간설정</th>
+        <td>
+            <?php echo help('입력된 시간이 경과되면 자동으로 예약대기건은 취소처리 됩니다.') ?>
+            예약대기건은 <input type="text" name="pn_wating_time" value="<?php echo $wzpconfig['pn_wating_time']; ?>" id="pn_wating_time" required class="frm_input required" size="3"> 시간이 지나면 자동으로 취소처리.
         </td>
     </tr>
     <tr>
