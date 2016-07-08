@@ -1,8 +1,6 @@
 <?php
 $sub_menu = '780100';
 include_once('./_common.php');
-include_once(G5_PLUGIN_PATH.'/wz.booking.pension/config.php');
-include_once(G5_PLUGIN_PATH.'/wz.booking.pension/function.lib.php');
 
 auth_check($auth[$sub_menu], "w");
 
@@ -46,7 +44,7 @@ if(!sql_query(" DESCRIBE {$g5['wzp_booking_table']} ", false)) {
                     `bk_hp` varchar(20) NOT NULL,
                     `bk_email` varchar(100) NOT NULL,
                     `bk_memo` text NOT NULL,
-                    `bk_payment` varchar(255) NOT NULL,
+                    `bk_payment` varchar(10) NOT NULL,
                     `bk_deposit_name` varchar(20) NOT NULL,
                     `bk_bank_account` varchar(255) NOT NULL,
                     `bk_price` int(11) NOT NULL DEFAULT '0',
@@ -146,6 +144,104 @@ if (!isset($wzpconfig['pn_wating_time'])) { // 2016-05-14 : 예약대기상태 w
     $db_reload = true;
 }
 
+// 2016-05-14 : PG결제설정.
+if (!isset($wzpconfig['pn_bank_use'])) { 
+    sql_query(" ALTER TABLE `{$g5['wzp_pension_table']}` 
+                    ADD `pn_bank_use` tinyint(4) NOT NULL DEFAULT '1',
+                    ADD `pn_reserv_price_avg` tinyint(4) NOT NULL DEFAULT '50',
+                    ADD `pn_pg_service` varchar(20) NOT NULL,
+                    ADD `pn_pg_card_use` tinyint(4) NOT NULL DEFAULT '0',
+                    ADD `pn_pg_dbank_use` tinyint(4) NOT NULL DEFAULT '0',
+                    ADD `pn_pg_vbank_use` tinyint(4) NOT NULL DEFAULT '0',
+                    ADD `pn_pg_hp_use` tinyint(4) NOT NULL DEFAULT '0',
+                    ADD `pn_pg_test` tinyint(4) NOT NULL DEFAULT '1',
+                    ADD `pn_pg_mid` varchar(100) NOT NULL,
+                    ADD `pn_pg_site_key` varchar(255) NOT NULL,
+                    ADD `pn_pg_escrow_use` tinyint(4) NOT NULL DEFAULT '0',
+                    ADD `pn_pg_tax_flag_use` tinyint(4) NOT NULL DEFAULT '0',
+                    ADD `pn_pg_tax_free` tinyint(4) NOT NULL DEFAULT '0'
+                    ; ", true);
+    $db_reload = true;
+}
+
+// 2016-05-19 : 결제결과값 필드 추가.
+$query = "show columns from `{$g5['wzp_booking_table']}` like 'bk_tno' ";
+$res = sql_fetch($query);
+if (empty($res)) {
+    sql_query(" ALTER TABLE `{$g5['wzp_booking_table']}` 
+                    ADD `bk_reserv_price` int(11) NOT NULL DEFAULT '0' AFTER `bk_price`,
+                    ADD `bk_pg_price` int(11) NOT NULL DEFAULT '0' AFTER `bk_receipt_price`,
+                    ADD `bk_pg_cancel` int(11) NOT NULL DEFAULT '0' AFTER `bk_pg_price`,
+                    ADD `bk_pg` varchar(20) NOT NULL AFTER `bk_log`,
+                    ADD `bk_tno` varchar(255) NOT NULL,
+                    ADD `bk_app_no` varchar(100) NOT NULL
+                    ; ", true);
+    $db_reload = true;
+}
+
+// 2016-07-07
+if(!sql_query(" DESCRIBE {$g5['wzp_room_extend_price_table']} ", false)) {
+    sql_query(" CREATE TABLE IF NOT EXISTS `{$g5['wzp_room_extend_price_table']}` (
+                    `rmp_ix` INT(11) NOT NULL AUTO_INCREMENT COMMENT '객실개별요금키',
+                    `rm_ix` INT(11) NOT NULL COMMENT '객실키',
+                    `rmp_year` CHAR(4) NOT NULL COMMENT '적용년도(yyyy)',
+                    `rmp_month` CHAR(2) NOT NULL COMMENT '적용월(mm)',
+                    `rmp_day` CHAR(2) NOT NULL COMMENT '적용일(dd)',
+                    `rmp_date` DATE NOT NULL COMMENT '일자(yyyy-mm-dd)',
+                    `rmp_price` INT(11) NOT NULL DEFAULT '0' COMMENT '이용요금',
+                    PRIMARY KEY (`rmp_ix`),
+                    INDEX `rm_ix` (`rm_ix`),
+                    INDEX `rmp_rm` (`rmp_year`, `rmp_month`)
+                )
+                COMMENT='객실개별요금정보'
+                ENGINE=MyISAM  DEFAULT CHARSET=utf8;", true);
+    $db_reload = true;
+}
+
+// 2016-07-07
+if(!sql_query(" DESCRIBE {$g5['wzp_room_extend_price_table']} ", false)) {
+    sql_query(" CREATE TABLE IF NOT EXISTS `{$g5['wzp_room_extend_price_table']}` (
+                    `rmp_ix` INT(11) NOT NULL AUTO_INCREMENT COMMENT '객실개별요금키',
+                    `rm_ix` INT(11) NOT NULL COMMENT '객실키',
+                    `rmp_year` CHAR(4) NOT NULL COMMENT '적용년도(yyyy)',
+                    `rmp_month` CHAR(2) NOT NULL COMMENT '적용월(mm)',
+                    `rmp_day` CHAR(2) NOT NULL COMMENT '적용일(dd)',
+                    `rmp_date` DATE NOT NULL COMMENT '일자(yyyy-mm-dd)',
+                    `rmp_price` INT(11) NOT NULL DEFAULT '0' COMMENT '이용요금',
+                    PRIMARY KEY (`rmp_ix`),
+                    INDEX `rm_ix` (`rm_ix`),
+                    INDEX `rmp_rm` (`rmp_year`, `rmp_month`)
+                )
+                COMMENT='객실개별요금정보'
+                ENGINE=MyISAM  DEFAULT CHARSET=utf8;", true);
+    $db_reload = true;
+}
+
+// 모바일결제시 사용될 임시결제정보
+if(!sql_query(" DESCRIBE {$g5['wzp_booking_data_table']} ", false)) {
+        sql_query(" CREATE TABLE IF NOT EXISTS `{$g5['wzp_booking_data_table']}` (
+                    `od_id` BIGINT(20) UNSIGNED NOT NULL,
+                    `mb_id` VARCHAR(20) NOT NULL DEFAULT '',
+                    `dt_pg` VARCHAR(255) NOT NULL DEFAULT '',
+                    `dt_data` TEXT NOT NULL,
+                    `dt_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+                    INDEX `od_id` (`od_id`)
+                )
+                ENGINE=MyISAM  DEFAULT CHARSET=utf8;", true);
+    $db_reload = true;
+}
+
+// 2016-07-07 : 예약상태 필드 추가.
+$query = "show columns from `{$g5['wzp_room_status_table']}` like 'rms_day' ";
+$res = sql_fetch($query);
+if (empty($res)) {
+    sql_query(" ALTER TABLE `{$g5['wzp_room_status_table']}` 
+                    ADD `rms_day` char(2) NOT NULL AFTER `rms_month`,
+                    CHANGE COLUMN `rms_date` `rms_date` date NOT NULL
+                    ; ", true);
+    $db_reload = true;
+}
+
 if ($db_reload) { 
     alert("DB를 갱신합니다.", G5_ADMIN_URL.'/wz_booking_admin/wzp_config.php'); 
 } 
@@ -156,6 +252,7 @@ include_once(G5_EDITOR_LIB);
 
 <form name="frm" id="frm" action="./wzp_config_update.php" method="post" enctype="multipart/form-data" onsubmit="return getAction(document.forms.frm);">
 
+<h2 class="h2_frm">환경설정</h2>
 <div class="tbl_frm01 tbl_wrap">
     <table>
     <caption>환경설정</caption>
@@ -192,13 +289,6 @@ include_once(G5_EDITOR_LIB);
         </td>
     </tr>
     <tr>
-        <th scope="row">입금계좌정보</th>
-        <td>
-            <div style="margin:5px 0">엔터로 구분 등록해주세요.</div>
-            <textarea name="pn_bank_info" id="pn_bank_info"><?php echo $wzpconfig['pn_bank_info']; ?></textarea>
-        </td>
-    </tr>
-    <tr>
         <th scope="row">공지</th>
         <td>
             <?php echo editor_html('pn_con_notice', get_text($wzpconfig['pn_con_notice'], 0)); ?>
@@ -224,7 +314,47 @@ include_once(G5_EDITOR_LIB);
     </tr>
     </tbody>
     </table>
+</div>
 
+<h2 class="h2_frm">결제설정</h2>
+<div class="tbl_frm01 tbl_wrap">
+    <table>
+    <caption>결제설정</caption>
+    <colgroup>
+        <col class="grid_4">
+        <col>
+    </colgroup>
+    <tbody>
+    <tr>
+        <th scope="row">예약금설정</th>
+        <td>
+            결제금액의 <input type="text" name="pn_reserv_price_avg" value="<?php echo $wzpconfig['pn_reserv_price_avg']; ?>" id="pn_reserv_price_avg" required class="frm_input required" style="text-align:center;" size="5"> % 예약금.
+        </td>
+    </tr>
+    <tr>
+        <th scope="row">무통장입금사용</th>
+        <td>
+            <?php echo help("주문시 무통장으로 입금을 가능하게 할것인지를 설정합니다.\n사용할 경우 은행계좌번호를 반드시 입력하여 주십시오.", 50); ?>
+            <select id="pn_bank_use" name="pn_bank_use">
+                <option value="0" <?php echo get_selected($wzpconfig['pn_bank_use'], 0); ?>>사용안함</option>
+                <option value="1" <?php echo get_selected($wzpconfig['pn_bank_use'], 1); ?>>사용</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <th scope="row">입금계좌정보</th>
+        <td>
+            <div style="margin:5px 0">엔터로 구분 등록해주세요.</div>
+            <textarea name="pn_bank_info" id="pn_bank_info" style="height:60px;"><?php echo $wzpconfig['pn_bank_info']; ?></textarea>
+        </td>
+    </tr>
+
+    <?php
+    @include_once(WZP_PLUGIN_PATH.'/gender/pg.setting.1.php');
+    ?>
+
+    </tbody>
+    </table>
 </div>
 
 <div class="btn_confirm01 btn_confirm">

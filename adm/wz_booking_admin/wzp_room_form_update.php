@@ -1,8 +1,6 @@
 <?php
 $sub_menu = '780300';
 include_once('./_common.php');
-include_once(G5_PLUGIN_PATH.'/wz.booking.pension/config.php');
-include_once(G5_PLUGIN_PATH.'/wz.booking.pension/function.lib.php');
 
 $_POST = array_map('trim', $_POST);
 if (isset($_REQUEST['rm_ix'])) {
@@ -34,7 +32,6 @@ else {
                     rm_price_sf         = '".(int)$_POST['rm_price_sf']."',
                     rm_price_fw         = '".(int)$_POST['rm_price_fw']."',
                     rm_price_ff         = '".(int)$_POST['rm_price_ff']."',
-                    rm_price_hs         = '".(int)$_POST['rm_price_hs']."',
                     rm_price_adult      = '".(int)$_POST['rm_price_adult']."',
                     rm_link_url         = '".$_POST['rm_link_url']."',
                     rm_sort             = '".(int)$_POST['rm_sort']."'

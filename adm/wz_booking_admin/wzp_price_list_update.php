@@ -17,11 +17,11 @@ if ($_POST['act_button'] == "선택삭제") {
         // 실제 번호를 넘김
         $k = $_POST['chk'][$i];
 
-        $sql = " delete from {$g5['wzp_room_table']} where rm_ix = '".(int)$_POST['rm_ix'][$k]."' ";
+        $sql = " delete from {$g5['wzp_room_extend_price_table']} where rmp_ix = '".(int)$_POST['rmp_ix'][$k]."' ";
         sql_query($sql);
     }
 
 }
 
-goto_url('./wzp_room_list.php?'.$qstr);
+goto_url('./wzp_price_list.php?'.$qstr);
 ?>

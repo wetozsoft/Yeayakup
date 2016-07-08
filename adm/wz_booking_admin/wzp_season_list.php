@@ -1,8 +1,6 @@
 <?php
 $sub_menu = '780200';
 include_once('./_common.php');
-include_once(G5_PLUGIN_PATH.'/wz.booking.pension/config.php');
-include_once(G5_PLUGIN_PATH.'/wz.booking.pension/function.lib.php');
 
 auth_check($auth[$sub_menu], "r");
 
@@ -14,6 +12,10 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
 
 $colspan = 5;
 ?>
+
+<style>
+.tbl_head01 .se_close {text-decoration:line-through}
+</style>
 
 <form name="frm" id="frm" method="post" action="./wzp_season_list_update.php" onsubmit="return getAction(this);">
 <input type="hidden" name="sst" value="<?php echo $sst ?>">
@@ -53,7 +55,7 @@ $colspan = 5;
             <input type="hidden" name="se_ix[<?php echo $i ?>]" value="<?php echo $row['se_ix'] ?>">
             <input type="checkbox" name="chk[]" value="<?php echo $i ?>" id="chk_<?php echo $i ?>">
         </td>
-        <td style="text-align:center;"><?php echo wz_season_type_str($row['se_type']); ?></td>
+        <td style="text-align:center;" class="<?php echo ($row['se_type'] == 'H' ? 'se_close' : '');?>"><?php echo wz_season_type_str($row['se_type']); ?></td>
         <td style="text-align:center;"><?php echo $row['se_frdate']; ?></td>
         <td style="text-align:center;"><?php echo $row['se_todate']; ?></td>
         <td class="td_mngsmall">

@@ -97,3 +97,8 @@ span.txheader.live {color:#ffffff;border:1px solid #1B58C7;background-color:#2E9
 .ord-list .action, .st3-form .action {margin:10px 0;text-align:center;}
 .ord-list .agree {margin:10px 0 20px;}
 .ord-list .linker {text-decoration:underline}
+
+.option-desc {margin-bottom:4px;}
+.pay-bank-notice {margin:20px 0;font-size:14px;letter-spacing:-1px;padding:20px;border:1px solid #B3B3B3;background-color:#fff;}
+.pay-bank-notice .desc {margin:5px 0;padding:0;list-style:none;}
+.pay-bank-notice .desc li {padding:3px 0 2px 16px;background:url(./img/i_info.gif) no-repeat 0px 6px;}

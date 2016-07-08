@@ -1,8 +1,6 @@
 <?php
 $sub_menu = '780200';
 include_once('./_common.php');
-include_once(G5_PLUGIN_PATH.'/wz.booking.pension/config.php');
-include_once(G5_PLUGIN_PATH.'/wz.booking.pension/function.lib.php');
 
 auth_check($auth[$sub_menu], "w");
 
@@ -37,6 +35,13 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
 <input type="hidden" name="sfl" value="<?php echo $sfl; ?>">
 <input type="hidden" name="stx" value="<?php echo $stx; ?>">
 <input type="hidden" name="page" value="<?php echo $page; ?>">
+    
+    <div class="local_desc01 local_desc">
+        <p>
+            시작일과 종료일은 서로 다른 연도로 입력할 수 없습니다. 예) 12월10일 ~ 01월20일 등록불가<br />
+            12월10일 ~ 01월20일 입력을 해야할 경우 : 12월10일 ~ 12월31일 등록 후 01월01일 ~ 01월20일 등록.
+        </p>
+    </div>
 
     <section id="anc_spp_pay" class="cbox">
         <h2><?php echo $html_title;?></h2>
@@ -117,7 +122,7 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
                         } 
                         ?>
                     </select> 일
-                    (예: 04-10 이면 4월10일날 예약을 할경우 시즌에 적용됨)
+                    (예: 04-10 이면 4월10일날 예약을 할경우 시즌에 적용됨, 종료일은 반드시 12월31일이 넘어가지 않도록 입력해주세요)
                 </td>
             </tr>
             </tbody>

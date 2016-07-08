@@ -1,8 +1,6 @@
 <?php
 $sub_menu = '780300';
 include_once('./_common.php');
-include_once(G5_PLUGIN_PATH.'/wz.booking.pension/config.php');
-include_once(G5_PLUGIN_PATH.'/wz.booking.pension/function.lib.php');
 
 check_demo();
 
@@ -69,8 +67,8 @@ else if ($_POST['act_button'] == "선택예약취소") {
         sql_query($sql);
 
         // 객실상태정보 변경
-        $query = "update {$g5['wzp_room_status_table']} set rms_status = '취소' where bk_ix = '".$bkix."' ";
-        sql_query($query);
+        $sql = "update {$g5['wzp_room_status_table']} set rms_status = '취소' where bk_ix = '".$bkix."' ";
+        sql_query($sql);
     }
 
 }
@@ -89,8 +87,8 @@ else if ($_POST['act_button'] == "선택예약대기") {
         sql_query($sql);
 
         // 객실상태정보 변경
-        $query = "update {$g5['wzp_room_status_table']} set rms_status = '대기' where bk_ix = '".$bkix."' ";
-        sql_query($query);
+        $sql = "update {$g5['wzp_room_status_table']} set rms_status = '대기' where bk_ix = '".$bkix."' ";
+        sql_query($sql);
     }
 
 }

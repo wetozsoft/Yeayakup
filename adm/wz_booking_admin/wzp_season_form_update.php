@@ -1,8 +1,6 @@
 <?php
 $sub_menu = '780200';
 include_once('./_common.php');
-include_once(G5_PLUGIN_PATH.'/wz.booking.pension/config.php');
-include_once(G5_PLUGIN_PATH.'/wz.booking.pension/function.lib.php');
 
 $_POST = array_map('trim', $_POST);
 if (isset($_REQUEST['se_ix'])) {

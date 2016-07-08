@@ -5,6 +5,8 @@ include_once(G5_PLUGIN_PATH.'/wz.booking.pension/config.php');
 include_once(G5_PLUGIN_PATH.'/wz.booking.pension/function.lib.php');
 add_stylesheet('<link rel="stylesheet" href="'.WZP_PLUGIN_URL.'/style.css">', 0);
 
+wz_ready_order_cancel(); // 설정된 시간이 지나면 예약대기건은 자동으로 취소처리.
+
 if (isset($_REQUEST['mode'])) {
     $mode = preg_replace('/[^a-z0-9_]/i', '', trim($_REQUEST['mode']));
     $mode = substr($mode, 0, 20);

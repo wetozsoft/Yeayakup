@@ -1,8 +1,6 @@
 <?php
 $sub_menu = '780300';
 include_once('./_common.php');
-include_once(G5_PLUGIN_PATH.'/wz.booking.pension/config.php');
-include_once(G5_PLUGIN_PATH.'/wz.booking.pension/function.lib.php');
 
 auth_check($auth[$sub_menu], "r");
 
@@ -41,18 +39,17 @@ $colspan = 13;
         <th scope="col" colspan="2"><?php echo wz_season_type_str('');?></th>
         <th scope="col" colspan="2"><?php echo wz_season_type_str('S');?></th>
         <th scope="col" colspan="2"><?php echo wz_season_type_str('F');?></th>
-        <th width="100px" scope="col" rowspan="2"><?php echo wz_season_type_str('H');?></th>
-        <th width="90px" scope="col" rowspan="2">관리</th>
+        <th width="80px" scope="col" rowspan="2">관리</th>
     </tr>
     <tr>
-        <th width="90px" scope="col">최소</th>
-        <th width="90px" scope="col">최대</th>
-        <th width="90px" scope="col">주중</th>
-        <th width="90px" scope="col">주말</th>
-        <th width="90px" scope="col">주중</th>
-        <th width="90px" scope="col">주말</th>
-        <th width="90px" scope="col">주중</th>
-        <th width="90px" scope="col">주말</th>
+        <th width="80px" scope="col">최소</th>
+        <th width="80px" scope="col">최대</th>
+        <th width="80px" scope="col">주중</th>
+        <th width="80px" scope="col">주말</th>
+        <th width="80px" scope="col">주중</th>
+        <th width="80px" scope="col">주말</th>
+        <th width="80px" scope="col">주중</th>
+        <th width="80px" scope="col">주말</th>
     </tr>
     </thead>
     <tbody>
@@ -67,17 +64,16 @@ $colspan = 13;
             <input type="hidden" name="rm_ix[<?php echo $i ?>]" value="<?php echo $row['rm_ix'] ?>">
             <input type="checkbox" name="chk[]" value="<?php echo $i ?>" id="chk_<?php echo $i ?>">
         </td>
-        <td style="text-align:center;"><?php echo $row['rm_subject']; ?></td>
-        <td style="text-align:center;"><?php echo $row['rm_size']; ?></td>
-        <td style="text-align:center;"><?php echo $row['rm_person_min']; ?></td>
-        <td style="text-align:center;"><?php echo $row['rm_person_max']; ?></td>
-        <td style="text-align:center;"><?php echo number_format($row['rm_price_rw']); ?></td>
-        <td style="text-align:center;"><?php echo number_format($row['rm_price_rf']); ?></td>
-        <td style="text-align:center;"><?php echo number_format($row['rm_price_sw']); ?></td>
-        <td style="text-align:center;"><?php echo number_format($row['rm_price_sf']); ?></td>
-        <td style="text-align:center;"><?php echo number_format($row['rm_price_fw']); ?></td>
-        <td style="text-align:center;"><?php echo number_format($row['rm_price_ff']); ?></td>
-        <td style="text-align:center;"><?php echo number_format($row['rm_price_hs']); ?></td>
+        <td class="td_alignc"><?php echo $row['rm_subject']; ?></td>
+        <td class="td_alignc"><?php echo $row['rm_size']; ?></td>
+        <td class="td_alignc"><?php echo $row['rm_person_min']; ?></td>
+        <td class="td_alignc"><?php echo $row['rm_person_max']; ?></td>
+        <td class="td_alignc"><?php echo number_format($row['rm_price_rw']); ?></td>
+        <td class="td_alignc"><?php echo number_format($row['rm_price_rf']); ?></td>
+        <td class="td_alignc"><?php echo number_format($row['rm_price_sw']); ?></td>
+        <td class="td_alignc"><?php echo number_format($row['rm_price_sf']); ?></td>
+        <td class="td_alignc"><?php echo number_format($row['rm_price_fw']); ?></td>
+        <td class="td_alignc"><?php echo number_format($row['rm_price_ff']); ?></td>
         <td class="td_mngsmall">
             <a href="./wzp_room_form.php?w=u&amp;rm_ix=<?php echo $row['rm_ix']; ?>&amp;<?php echo $qstr; ?>">수정</a>&nbsp;
             <a href="./wzp_room_form_update.php?w=d&amp;rm_ix=<?php echo $row['rm_ix']; ?>&amp;<?php echo $qstr; ?>" onclick="return delete_confirm();">삭제</a> 

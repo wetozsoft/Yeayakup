@@ -1,8 +1,6 @@
 <?php
 $sub_menu = '780300';
 include_once('./_common.php');
-include_once(G5_PLUGIN_PATH.'/wz.booking.pension/config.php');
-include_once(G5_PLUGIN_PATH.'/wz.booking.pension/function.lib.php');
 
 auth_check($auth[$sub_menu], "w");
 
@@ -79,7 +77,7 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
             <tr>
                 <th scope="row">링크URL</th>
                 <td>
-                    <input type="text" name="rm_link_url" id="rm_link_url" value="<?php echo $rm['rm_link_url'];?>" class="frm_input"  maxlength="120" size="80" />
+                    http://<input type="text" name="rm_link_url" id="rm_link_url" value="<?php echo $rm['rm_link_url'];?>" class="frm_input"  maxlength="120" size="80" />
                 </td>
             </tr>
             <tr>
@@ -133,13 +131,6 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
                 </td>
                 <td>
                     <input type="text" name="rm_price_ff" id="rm_price_ff" value="<?php echo $rm['rm_price_ff'];?>" required class="required frm_input number"  maxlength="20" size="10" /> 원
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php echo wz_season_type_str('H');?><br />(공휴일)</th>
-                <td colspan="3">
-                    <input type="text" name="rm_price_hs" id="rm_price_hs" value="<?php echo $rm['rm_price_hs'];?>" required class="required frm_input number"  maxlength="20" size="10" /> 원
-                    (시즌관리 화면에서 특정일 설정 가능, 성수기요금보다 우선순위로 요금이 적용됩니다.)
                 </td>
             </tr>
             <tr>

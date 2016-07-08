@@ -1,8 +1,6 @@
 <?php
 $sub_menu = '780300';
 include_once('./_common.php');
-include_once(G5_PLUGIN_PATH.'/wz.booking.pension/config.php');
-include_once(G5_PLUGIN_PATH.'/wz.booking.pension/function.lib.php');
 
 auth_check($auth[$sub_menu], "r");
 
@@ -86,15 +84,15 @@ $colspan = 13;
             <label for="chkall" class="sound_only">현재 페이지 전체</label>
             <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all(this.form)">
         </th>
-        <th width="auto" scope="col">예약번호</th>
-        <th width="150px" scope="col">객실명</th>
+        <th width="70px" scope="col">예약번호</th>
+        <th width="auto" scope="col">객실명</th>
         <th width="100px" scope="col">성명</th>
-        <th width="100px" scope="col">총요금</th>
-        <th width="100px" scope="col">결제상태</th>
-        <th width="100px" scope="col">결제방식</th>
-        <th width="150px" scope="col">핸드폰번호</th>
-        <th width="150px" scope="col">날짜</th>
-        <th width="100px" scope="col">예약상태</th>
+        <th width="80px" scope="col">총이용요금</th>
+        <th width="230px" scope="col">결제상태</th>
+        <th width="90px" scope="col">결제방식</th>
+        <th width="100px" scope="col">핸드폰번호</th>
+        <th width="120px" scope="col">날짜</th>
+        <th width="70px" scope="col">예약상태</th>
     </tr>
     </thead>
     <tbody>
@@ -109,15 +107,18 @@ $colspan = 13;
             <input type="hidden" name="bk_ix[<?php echo $i ?>]" value="<?php echo $row['bk_ix'] ?>">
             <input type="checkbox" name="chk[]" value="<?php echo $i ?>" id="chk_<?php echo $i ?>">
         </td>
-        <td style="text-align:center;"><a href="./wzp_booking_view.php?bk_ix=<?php echo $row['bk_ix']; ?>&amp;<?php echo $qstr; ?>" class="linker"><?php echo $row['od_id']; ?></a></td>
-        <td style="text-align:center;"><?php echo $row['bk_subject']; ?></td>
-        <td style="text-align:center;"><?php echo $row['bk_name']; ?></td>
-        <td style="text-align:center;"><?php echo number_format($row['bk_price']); ?></td>
-        <td style="text-align:center;"><?php echo $row['bk_misu'] ? '<font color="red">미결제</font>' : '결제완료'; ?></td>
-        <td style="text-align:center;"><?php echo $row['bk_payment']; ?></td>
-        <td style="text-align:center;"><?php echo $row['bk_hp']; ?></td>
-        <td style="text-align:center;"><?php echo $row['bk_time']; ?></td>
-        <td style="text-align:center;"><?php echo $row['bk_status']; ?></td>
+        <td class="td_alignc"><a href="./wzp_booking_view.php?bk_ix=<?php echo $row['bk_ix']; ?>&amp;<?php echo $qstr; ?>" class="linker"><?php echo $row['od_id']; ?></a></td>
+        <td class="td_alignc"><?php echo $row['bk_subject']; ?></td>
+        <td class="td_alignc"><?php echo $row['bk_name']; ?></td>
+        <td class="td_alignc"><?php echo number_format($row['bk_price']); ?></td>
+        <td class="td_alignc">
+            예약금 (<?php echo ($row['bk_reserv_price'] <= ($row['bk_price'] - $row['bk_misu']) ? '결제완료' : '<font color="red">미결제</font>'); ?>)&nbsp;/&nbsp;
+            총금액 (<?php echo $row['bk_misu'] ? '<font color="red">미결제</font>' : '결제완료'; ?>)
+        </td>
+        <td class="td_alignc"><?php echo $row['bk_payment']; ?></td>
+        <td class="td_alignc"><?php echo $row['bk_hp']; ?></td>
+        <td class="td_alignc"><?php echo $row['bk_time']; ?></td>
+        <td class="td_alignc"><?php echo $row['bk_status']; ?></td>
     </tr>
 
     <?php

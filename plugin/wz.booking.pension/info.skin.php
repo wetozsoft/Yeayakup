@@ -11,6 +11,37 @@ while($row = sql_fetch_array($res)) {
 }
 $cnt_room = count($arr_room);
 sql_free_result($res);
+
+$exclude = array('req_tx', 'res_cd', 'tran_cd', 'ordr_idxx', 'good_mny', 'good_name', 'buyr_name', 'buyr_tel1', 'buyr_tel2', 'buyr_mail', 'enc_info', 'enc_data', 'use_pay_method', 'rcvr_name', 'rcvr_tel1', 'rcvr_tel2', 'rcvr_mail', 'rcvr_zipx', 'rcvr_add1', 'rcvr_add2', 'param_opt_1', 'param_opt_2', 'param_opt_3');
+
+    $sql = " select * from {$g5['wzp_booking_data_table']} where od_id = '6160706122316865' ";
+    $row = sql_fetch($sql);
+
+    $data = unserialize(base64_decode($row['dt_data']));
+    $order_action_url = https_url(G5_PLUGIN_DIR.'/wz.booking.pension/step.2.update.php', true);
+
+    echo '<form name="forderform" method="post" action="'.$order_action_url.'" autocomplete="off">'.PHP_EOL;
+
+    $field = '';
+    foreach($data as $key=>$value) {
+        if(in_array($key, $exclude))
+            continue;
+
+        if(is_array($value)) {
+            foreach($value as $k=>$v) {
+                $field .= '<input type="hidden" name="'.$key.'['.$k.']" value="'.$v.'">'.PHP_EOL;
+            }
+        } else {
+            $field .= '<input type="hidden" name="'.$key.'" value="'.$value.'">'.PHP_EOL;
+        }
+    }
+    echo $field;
+
+    foreach($_POST as $key=>$value) {
+        echo '<input type="hidden" name="'.$key.'" value="'.$value.'">'.PHP_EOL;
+    }
+
+    echo '</form>'.PHP_EOL;
 ?>
 
 <div class="st3-form">
@@ -21,7 +52,7 @@ sql_free_result($res);
         <colgroup>
             <col>
         </colgroup>
-        <tbody>
+        <thead>
         <tr>
             <th scope="col" rowspan="2">객실명</th>
             <th scope="col" rowspan="2">사이즈</th>
@@ -40,6 +71,8 @@ sql_free_result($res);
             <th scope="col">주중</th>
             <th scope="col">주말</th>
         </tr>
+        </thead>
+        <tbody>
         <?php 
         if ($cnt_room > 0) { 
             for ($z = 0; $z < $cnt_room; $z++) { 

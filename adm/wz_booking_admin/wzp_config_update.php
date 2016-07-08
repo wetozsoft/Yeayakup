@@ -1,7 +1,6 @@
 <?php
 $sub_menu = '780100';
 include_once('./_common.php');
-include_once(G5_PLUGIN_PATH.'/wz.booking.pension/config.php');
 
 check_demo();
 
@@ -23,7 +22,17 @@ $sql = " update {$g5['wzp_pension_table']}
                 pn_max_booking_day      = '".(int)$_POST['pn_max_booking_day']."',
                 pn_max_booking_expire   = '".(int)$_POST['pn_max_booking_expire']."',
                 pn_main_calendar_use    = '".(int)$_POST['pn_main_calendar_use']."',
-                pn_wating_time          = '".(int)$_POST['pn_wating_time']."'
+                pn_wating_time          = '".(int)$_POST['pn_wating_time']."',
+                pn_bank_use             = '".(int)$_POST['pn_bank_use']."',
+                pn_reserv_price_avg     = '".(int)$_POST['pn_reserv_price_avg']."',
+                pn_pg_service           = '".$_POST['pn_pg_service']."',
+                pn_pg_card_use          = '".$_POST['pn_pg_card_use']."',
+                pn_pg_dbank_use         = '".$_POST['pn_pg_dbank_use']."',
+                pn_pg_vbank_use         = '".$_POST['pn_pg_vbank_use']."',
+                pn_pg_hp_use            = '".$_POST['pn_pg_hp_use']."',
+                pn_pg_mid               = '".$_POST['pn_pg_mid']."',
+                pn_pg_site_key          = '".$_POST['pn_pg_site_key']."',
+                pn_pg_test              = '".(int)$_POST['pn_pg_test']."'
                 $sql_common
             ";
 sql_query($sql);
