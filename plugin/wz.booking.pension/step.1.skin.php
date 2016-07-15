@@ -7,18 +7,14 @@ define('WZP_DEFAULT_TODAY', wz_get_addday(G5_TIME_YMD, 1));
 
 if (isset($_GET['sch_year']) && $_GET['sch_year'])
     $sch_year = (int)$_GET['sch_year'];
-else
-    $sch_year = substr(WZP_DEFAULT_TODAY,0,4);
 
 if (isset($_GET['sch_month']) && $_GET['sch_month']) 
     $sch_month = (int)$_GET['sch_month'];
-else
-    $sch_month = (int)substr(WZP_DEFAULT_TODAY,5,2);
 
 $sch_day = preg_match("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})/", $_GET['sch_day']) ? $_GET['sch_day'] : WZP_DEFAULT_TODAY;
 
 if (isset($sch_year) && $sch_year && isset($sch_month) && $sch_month) {
-    
+
 }
 else { // 실시간예약 처음화면에서 넘어왔을경우.
     $sch_year   = $sch_day ? substr($sch_day, 0, 4) : $sch_year;

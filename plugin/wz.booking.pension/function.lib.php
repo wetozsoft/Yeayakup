@@ -241,22 +241,6 @@ function wz_calculate_season($rm, $dt) {
     return $price;
 } 
 
-function wz_calculate_season_arr($rm, $type, $week) { 
-    switch (strtoupper($type)) {
-        case 'F': // 성수기
-            $price = $week == '5' || $week == '6' ? $rm['rm_price_ff'] : $rm['rm_price_fw'];
-        break;
-        case 'S': // 준성수기
-            $price = $week == '5' || $week == '6' ? $rm['rm_price_sf'] : $rm['rm_price_sw'];
-        break;
-        default: // 비성수기
-            $price = $week == '5' || $week == '6' ? $rm['rm_price_rf'] : $rm['rm_price_rw'];
-        break;
-    }
-
-    return $price;
-} 
-
 // 예약가능한 날짜 계산
 function wz_check_date_room($rm_ix, $fr_date) { 
     
@@ -309,10 +293,9 @@ function wz_calculate_room($parm) {
                 $person_min     = (int)$parm['person_min'][$parm['chk'][$z]]; // 최소인원
                 $person_max     = (int)$parm['person_max'][$parm['chk'][$z]]; // 최대인원
                 $cnt_adult      = (int)$parm['bk_cnt_adult'][$parm['chk'][$z]]; // 선택인원 - 성인
+                $rm['bk_cnt_adult'] = $cnt_adult; 
 
                 $price_adult    = $rm['rm_price_adult']; // 추가요금 - 성인
-
-                $rm['bk_cnt_adult'] = $cnt_adult;     
 
                 $cnt_extra = ($cnt_adult) - $person_min;
                 
