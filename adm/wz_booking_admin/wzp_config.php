@@ -242,6 +242,16 @@ if (empty($res)) {
     $db_reload = true;
 }
 
+// 2016-07-25 : 당일예약 필드 추가.
+$query = "show columns from `{$g5['wzp_pension_table']}` like 'pn_booking_today_use' ";
+$res = sql_fetch($query);
+if (empty($res)) {
+    sql_query(" ALTER TABLE `{$g5['wzp_pension_table']}` 
+                    ADD `pn_booking_today_use` tinyint(4) NOT NULL AFTER `pn_wating_time`
+                    ; ", true);
+    $db_reload = true;
+}
+
 if ($db_reload) { 
     alert("DB를 갱신합니다.", G5_ADMIN_URL.'/wz_booking_admin/wzp_config.php'); 
 } 
@@ -280,6 +290,13 @@ include_once(G5_EDITOR_LIB);
         <td>
             <?php echo help('입력된 시간이 경과되면 자동으로 예약대기건은 취소처리 됩니다.') ?>
             예약대기건은 <input type="text" name="pn_wating_time" value="<?php echo $wzpconfig['pn_wating_time']; ?>" id="pn_wating_time" required class="frm_input required" size="3"> 시간이 지나면 자동으로 취소처리.
+        </td>
+    </tr>
+    <tr>
+        <th scope="row">당일예약설정</th>
+        <td>
+            <?php echo help('체크하시면 당일예약이 가능합니다.') ?>
+            <input type="checkbox" name="pn_booking_today_use" value="1" id="pn_booking_today_use" <?php echo $wzpconfig['pn_booking_today_use']?'checked':''; ?>><label for="pn_booking_today_use"> 당일예약 사용</label>
         </td>
     </tr>
     <tr>

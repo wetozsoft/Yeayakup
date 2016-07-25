@@ -23,6 +23,7 @@ $sql = " update {$g5['wzp_pension_table']}
                 pn_max_booking_expire   = '".(int)$_POST['pn_max_booking_expire']."',
                 pn_main_calendar_use    = '".(int)$_POST['pn_main_calendar_use']."',
                 pn_wating_time          = '".(int)$_POST['pn_wating_time']."',
+                pn_booking_today_use    = '".(int)$_POST['pn_booking_today_use']."',
                 pn_bank_use             = '".(int)$_POST['pn_bank_use']."',
                 pn_reserv_price_avg     = '".(int)$_POST['pn_reserv_price_avg']."',
                 pn_pg_service           = '".$_POST['pn_pg_service']."',

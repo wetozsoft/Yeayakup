@@ -70,8 +70,13 @@ while($row = sql_fetch_array($res)) {
 $cnt_room = count($arr_room);
 sql_free_result($res);
 
-if ($sch_day <= G5_TIME_YMD) { // 오늘 이전날짜 예약불가.
-    $cnt_room = 0;
+if ($wzpconfig['pn_booking_today_use']) { 
+    if ($sch_day < G5_TIME_YMD)
+        $cnt_room = 0;
+} 
+else {
+    if ($sch_day <= G5_TIME_YMD)
+        $cnt_room = 0;
 }
 
 // 최대예약가능일.
@@ -119,8 +124,18 @@ $day_expire = wz_get_addday(G5_TIME_YMD, $wzpconfig['pn_max_booking_expire']);
 
                 // 당일 및 이전날짜 예약불가. 
                 // 2016-03-30 : 최대예약가능일 추가.
+                // 2016-07-25 : 관리자에서 설정한 당일예약 여부 
                 $is_block = false;
-                if ($vDate <= G5_TIME_YMD || $vDate > $day_expire) { 
+                if ($wzpconfig['pn_booking_today_use']) { 
+                    if ($vDate < G5_TIME_YMD)
+                        $is_block = true;
+                } 
+                else {
+                    if ($vDate <= G5_TIME_YMD)
+                        $is_block = true;
+                }
+
+                if ($vDate > $day_expire) { 
                     $is_block = true;
                 }
 
@@ -194,7 +209,7 @@ $day_expire = wz_get_addday(G5_TIME_YMD, $wzpconfig['pn_max_booking_expire']);
         </tr>
         </thead>
         <tbody>
-        <?php 
+        <?php
         if ($cnt_room > 0) { 
             for ($z = 0; $z < $cnt_room; $z++) { 
 
