@@ -84,7 +84,7 @@ $colspan = 13;
             <label for="chkall" class="sound_only">현재 페이지 전체</label>
             <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all(this.form)">
         </th>
-        <th width="70px" scope="col">예약번호</th>
+        <th width="120px" scope="col">예약번호</th>
         <th width="auto" scope="col">객실명</th>
         <th width="100px" scope="col">성명</th>
         <th width="80px" scope="col">총이용요금</th>
@@ -92,13 +92,16 @@ $colspan = 13;
         <th width="90px" scope="col">결제방식</th>
         <th width="100px" scope="col">핸드폰번호</th>
         <th width="120px" scope="col">날짜</th>
-        <th width="70px" scope="col">예약상태</th>
+        <th width="50px" scope="col">상태</th>
     </tr>
     </thead>
     <tbody>
     <?php
     for ($i=0; $row=sql_fetch_array($result); $i++) {
         
+        $query2 = "select * from {$g5['wzp_booking_room_table']} where bk_ix = '{$row['bk_ix']}' "; // 객실정보
+        $result2 = sql_query($query2);
+
         $bg  = 'bg'.($i%2);
     ?>
 
@@ -108,7 +111,13 @@ $colspan = 13;
             <input type="checkbox" name="chk[]" value="<?php echo $i ?>" id="chk_<?php echo $i ?>">
         </td>
         <td class="td_alignc"><a href="./wzp_booking_view.php?bk_ix=<?php echo $row['bk_ix']; ?>&amp;<?php echo $qstr; ?>" class="linker"><?php echo $row['od_id']; ?></a></td>
-        <td class="td_alignc"><?php echo $row['bk_subject']; ?></td>
+        <td>
+            <?php
+            for ($z=0; $row2=sql_fetch_array($result2); $z++) {
+                echo '<div><strong>'.$row2['bkr_subject'].'</strong> <span class="use-dt">'.wz_get_hangul_date_md($row2['bkr_frdate']).'('.get_yoil($row2['bkr_frdate']).') ~ '.wz_get_hangul_date_md($row2['bkr_todate']).'('.get_yoil($row2['bkr_todate']).')</span></div>';
+            } 
+            ?>
+        </td>
         <td class="td_alignc"><?php echo $row['bk_name']; ?></td>
         <td class="td_alignc"><?php echo number_format($row['bk_price']); ?></td>
         <td class="td_alignc">
@@ -157,17 +166,17 @@ $colspan = 13;
             }
         }
         else if(document.pressed == "선택예약완료") {
-            if(!confirm("선택한 예약정보를 선택예약완료처리 하시겠습니까?")) {
+            if(!confirm("선택한 예약정보를 예약완료처리 하시겠습니까?")) {
                 return false;
             }
         }
         else if(document.pressed == "선택예약취소") {
-            if(!confirm("선택한 예약정보를 선택예약취소처리 하시겠습니까?")) {
+            if(!confirm("선택한 예약정보를 예약취소처리 하시겠습니까?")) {
                 return false;
             }
         }
         else if(document.pressed == "선택예약대기") {
-            if(!confirm("선택한 예약정보를 선택예약대기처리 하시겠습니까?")) {
+            if(!confirm("선택한 예약정보를 예약대기처리 하시겠습니까?")) {
                 return false;
             }
         }

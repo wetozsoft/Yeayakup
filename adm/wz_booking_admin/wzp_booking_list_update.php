@@ -10,7 +10,7 @@ if (!count($_POST['chk'])) {
 
 if ($_POST['act_button'] == "선택삭제") {
 
-    auth_check($auth[$sub_menu], 'w');
+    auth_check($auth[$sub_menu], 'd');
 
     for ($i=0; $i<count($_POST['chk']); $i++) {
 
