@@ -150,8 +150,9 @@ class wz_calendar {
 
         $date_mn = substr($date, 5);
 
-        if ($solar[$date_mn]) $str = $solar[$date_mn];
-        if ($lunar[$date]) $str = $lunar[$date];
+        $str = '';
+        if (isset($solar[$date_mn])) $str = $solar[$date_mn];
+        if (isset($lunar[$date])) $str = $lunar[$date];
         return $str;
 
     } 
@@ -173,7 +174,7 @@ function wz_get_addday($day, $add) {
     $y      = substr( $day, 0, 4 );
     $m      = substr( $day, 4, 2 );
     $d      = substr( $day, 6, 2 );
-    return date("Y-m-d", mktime(0,0,0, $m, ($d+$add), $y));
+    return date("Y-m-d", mktime(0,0,0, $m, ($add > 0 ? $d+$add : $d-$add), $y));
 }
 
  //날짜 사이의 일수를 구한다.
@@ -216,10 +217,13 @@ function wz_calculate_season($rm, $dt) {
     
     global $g5;
 
-    // 객실 최우선적용정보
     $rmp_month  = substr($dt['date'],5,2);
     $rmp_day    = substr($dt['date'],8);
-    $query = "select * from {$g5['wzp_room_extend_price_table']} where rm_ix = '{$rm['rm_ix']}' and rmp_date = '{$dt['date']}' ";
+
+    // 객실 최우선적용정보
+    $query = "  select * from {$g5['wzp_room_extend_price_table']} 
+                where rm_ix = '{$rm['rm_ix']}' 
+                and (rmp_date = '{$dt['date']}' or (rmp_loop_year = 1 and rmp_month = '".$rmp_month."' and rmp_day = '".$rmp_day."')) ";
     $rmp = sql_fetch($query);
     if ($rmp['rmp_ix']) {
         $price = $rmp['rmp_price'];
@@ -385,5 +389,26 @@ function wz_ready_order_cancel() {
 
         // 예약자에게 자동취소처리 내역 전송 (mail, sms)
     }
+}
+
+// 날짜항목을 경과된 시간으로 표시
+function wz_convert_time_last($last_time) { 
+
+    $ntime  = strtotime(G5_TIME_YMDHIS) - strtotime($last_time);
+    $days   = floor($ntime / 86400); 
+    $time   = $ntime - ($days * 86400); 
+    $hours  = floor($time / 3600); 
+    $time   = $time - ($hours * 3600); 
+    $min    = floor($time / 60); 
+    $sec    = $time - ($min * 60); 
+     
+    if ($days == 0 && $hours == 0 && $min == 0)
+        return $sec.'초';
+    elseif ($days == 0 && $hours == 0)
+        return $min.'분';
+    elseif ($days == 0)
+        return $hours.'시간';
+    else
+        return $days.'일';
 }
 ?>

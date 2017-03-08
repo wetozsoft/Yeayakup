@@ -1,7 +1,7 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
-$wz_cal = new wz_calendar($_GET['sch_year'], $_GET['sch_month'], $_GET['sch_day']);
+$wz_cal = new wz_calendar($_GET['sch_year'], $_GET['sch_month'], $sch_day);
 $total_day      = $wz_cal->total_day;
 $year_prev      = $wz_cal->year_prev;
 $month_prev     = $wz_cal->month_prev;
@@ -62,12 +62,12 @@ $day_expire = wz_get_addday(G5_TIME_YMD, $wzpconfig['pn_max_booking_expire']);
 <tr height="30" class="date">
     <?php
     // count는 <tr>태그를 넘기기위한 변수. 변수값이 7이되면 <tr>태그를 삽입한다.
-    $count  = 0;
+    $weekno  = 0;
 
     //첫번째 주에서 빈칸을 1일전까지 빈칸을 삽입
     for ($i = 0; $i < $first_day; $i++) {
         echo '<td class="prev"></td>'.PHP_EOL;
-        $count++;
+        $weekno++;
     }
 
     for ($day = 1; $day <= $total_day; $day++) {
@@ -75,7 +75,7 @@ $day_expire = wz_get_addday(G5_TIME_YMD, $wzpconfig['pn_max_booking_expire']);
         $v02Dd = sprintf("%02d", $day);
         $vMmDd = $sch_month_02d ."-". $v02Dd;
         $vDate = $sch_year ."-". $vMmDd; // 표시 날짜.
-        $bClss = $wz_cal->day_class($vDate, $count);
+        $bClss = $wz_cal->day_class($vDate, $weekno);
 
         // 당일 및 이전날짜 예약불가. 
         // 2016-03-30 : 최대예약가능일 추가.
@@ -100,7 +100,7 @@ $day_expire = wz_get_addday(G5_TIME_YMD, $wzpconfig['pn_max_booking_expire']);
             $rm_html .= '  <ul class="rmlist">'.PHP_EOL;
             for ($j=0;$j<$cnt_room;$j++) { 
                 $nw_status = '';
-                if (isset($arr_status[$vDate]))
+                if (isset($arr_status[$vDate][$arr_room[$j]['rm_ix']]))
                     $nw_status = $arr_status[$vDate][$arr_room[$j]['rm_ix']]['rms_status'];
 
                 $atag1 = $atag2 = $liclass = $txheader = '';
@@ -135,15 +135,15 @@ $day_expire = wz_get_addday(G5_TIME_YMD, $wzpconfig['pn_max_booking_expire']);
         echo $rm_html;
         echo '</td>'.PHP_EOL;
 
-        if ($count==6) { // 토요일이 되면 줄바꾸기 위한 <tr>태그 삽입을 위한 식
+        if ($weekno==6) { // 토요일이 되면 줄바꾸기 위한 <tr>태그 삽입을 위한 식
             echo '</tr>'.PHP_EOL;
             if($day != $total_day) {
                 echo '<tr height="30" class="date">'.PHP_EOL;
-                $count = 0;
             }
+            $weekno = 0;
         }
         else {
-            $count++;
+            $weekno++;
         }
     }
 
@@ -151,11 +151,13 @@ $day_expire = wz_get_addday(G5_TIME_YMD, $wzpconfig['pn_max_booking_expire']);
     unset($arr_room);
 
     // 선택한 월의 마지막날 이후의 빈테이블 삽입
-    for ($i=$day; $total_day <= $day && $count <= 6;$i++) {
-        echo '<td class="next '.($count == 6 ? 'sat' : '').'"></td>'.PHP_EOL;
-        if ($count == 6) 
-            echo '</tr>'.PHP_EOL;
-        $count++;
+    if ($weekno != 0) { 
+        for ($i=$day; $total_day <= $day && $weekno <= 6;$i++) {
+            echo '<td class="next '.($weekno == 6 ? 'sat' : '').'"></td>'.PHP_EOL;
+            if ($weekno == 6) 
+                echo '</tr>'.PHP_EOL;
+            $weekno++;
+        }
     }
     ?>
 </tbody>

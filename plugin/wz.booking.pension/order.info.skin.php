@@ -1,7 +1,8 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
-$od_id = (int)$_GET['od_id'];
+$od_id = $_GET['od_id'];
+$od_id = preg_match("/^[0-9]+$/", $od_id) ? $od_id : '';
 
 if (!$is_member) {
     if (get_session('ss_orderview_uid') != $_GET['uid'])
@@ -60,6 +61,15 @@ if ($res) sql_free_result($res);
 
 $uid = md5($bk['od_id'].$bk['bk_time'].$bk['bk_ip']);
 $action_url = https_url(G5_PLUGIN_DIR.'/wz.booking.pension/order.view.update.php', true);   
+
+// LG 현금영수증 JS
+if($bk['bk_pg'] == 'lg') {
+    if($wzpconfig['pn_pg_test']) {
+        echo '<script language="JavaScript" src="http://pgweb.uplus.co.kr:7085/WEB_SERVER/js/receipt_link.js"></script>'.PHP_EOL;
+    } else {
+        echo '<script language="JavaScript" src="http://pgweb.uplus.co.kr/WEB_SERVER/js/receipt_link.js"></script>'.PHP_EOL;
+    }
+}
 ?>
 
 <div class="pay-bank-notice">
@@ -197,7 +207,12 @@ $action_url = https_url(G5_PLUGIN_DIR.'/wz.booking.pension/order.view.update.php
         <th>입금정보</th>
         <td>
             <?php
-            echo ' 입금자명 : '.get_text($bk['bk_deposit_name']).' 입금계좌 : '.get_text($bk['bk_bank_account']);
+            if ($bk['bk_deposit_name']) { 
+                echo ' 입금자명 : '.get_text($bk['bk_deposit_name']);    
+            } 
+            if ($bk['bk_bank_account']) { 
+                echo ' 입금계좌 : '.get_text($bk['bk_bank_account']);    
+            } 
             ?>
         </td>
     </tr>
@@ -214,6 +229,14 @@ $action_url = https_url(G5_PLUGIN_DIR.'/wz.booking.pension/order.view.update.php
                     include_once(WZP_PLUGIN_PATH.'/gender/kcp/config.php');
                     $hp_receipt_script = 'window.open(\''.$g_receipt_url_bill.'mcash_bill&tno='.$bk['bk_tno'].'&order_no='.$bk['od_id'].'&trade_mony='.$bk['bk_receipt_price'].'\', \'winreceipt\', \'width=500,height=690,scrollbars=yes,resizable=yes\');';
                 }
+                else if($bk['bk_pg'] == 'lg') {
+                    include_once(WZP_PLUGIN_PATH.'/gender/lg/config.php');
+                    $LGD_TID      = $bk['bk_tno'];
+                    $LGD_MERTKEY  = $wzpconfig['pn_pg_site_key'];
+                    $LGD_HASHDATA = md5($LGD_MID.$LGD_TID.$LGD_MERTKEY);
+
+                    $hp_receipt_script = 'showReceiptByTID(\''.$LGD_MID.'\', \''.$LGD_TID.'\', \''.$LGD_HASHDATA.'\');';
+                }
             ?>
             <a href="javascript:;" onclick="<?php echo $hp_receipt_script; ?>">영수증 출력</a>
             <?php
@@ -224,6 +247,14 @@ $action_url = https_url(G5_PLUGIN_DIR.'/wz.booking.pension/order.view.update.php
                 if($bk['bk_pg'] == 'kcp') {
                     include_once(WZP_PLUGIN_PATH.'/gender/kcp/config.php');
                     $card_receipt_script = 'window.open(\''.$g_receipt_url_bill.'card_bill&tno='.$bk['bk_tno'].'&order_no='.$bk['od_id'].'&trade_mony='.$bk['bk_receipt_price'].'\', \'winreceipt\', \'width=470,height=815,scrollbars=yes,resizable=yes\');';
+                }
+                else if($bk['bk_pg'] == 'lg') {
+                    include_once(WZP_PLUGIN_PATH.'/gender/lg/config.php');
+                    $LGD_TID      = $bk['bk_tno'];
+                    $LGD_MERTKEY  = $wzpconfig['pn_pg_site_key'];
+                    $LGD_HASHDATA = md5($LGD_MID.$LGD_TID.$LGD_MERTKEY);
+
+                    $card_receipt_script = 'showReceiptByTID(\''.$LGD_MID.'\', \''.$LGD_TID.'\', \''.$LGD_HASHDATA.'\');';
                 }
             ?>
             <a href="javascript:;" onclick="<?php echo $card_receipt_script; ?>">영수증 출력</a>

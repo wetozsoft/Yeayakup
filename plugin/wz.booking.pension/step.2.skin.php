@@ -127,7 +127,7 @@ if ($wzpconfig['pn_pg_service']) {
         <tr>
             <th scope="col">예약금</th>
             <td>
-                <input type="hidden" name="bk_price" id="bk_price" value="<?php echo $reserv_price;?>" />
+                <input type="hidden" name="reserv_price" id="reserv_price" value="<?php echo $reserv_price;?>" />
                 <input type="hidden" name="org_bk_price" id="org_bk_price" value="<?php echo $reserv_price;?>" />
                 <strong id="od_tot_price"><?php echo number_format($reserv_price);?> 원</strong> (결제/입금이 완료되어야 최종 예약이 완료됩니다.)
             </td>
@@ -281,9 +281,6 @@ if ($wzpconfig['pn_pg_service']) {
 
 <script type="text/javascript">
 <!--
-    function getCalender(sch_year, sch_month, sch_day) { 
-        location.href = "<?php echo WZP_STATUS_URL?>&mode=step1&sch_year="+sch_year+"&sch_month="+sch_month+"&sch_day="+sch_day;
-    }
     function getNext() { 
         var f = document.forms.wzfrm;
 
@@ -329,6 +326,12 @@ if ($wzpconfig['pn_pg_service']) {
             }
         }
 
+        var payment = $(":input:radio[name=bk_payment]:checked").val();
+        if (!payment) {
+            alert("결제방식을 선택해주세요.");
+            return;
+        }
+
         if (f.agree1.checked == false) {
             alert("예약 및 환불규정에 동의 후 예약이 가능합니다.");
             f.agree1.focus();
@@ -337,13 +340,6 @@ if ($wzpconfig['pn_pg_service']) {
         if (f.agree2.checked == false) {
             alert("개인정보 활용에 동의 후 예약이 가능합니다.");
             f.agree2.focus();
-            return;
-        }
-
-        var payment = $(":input:radio[name=bk_payment]:checked").val();
-
-        if (!payment) {
-            alert("결제방식을 선택해주세요.");
             return;
         }
 

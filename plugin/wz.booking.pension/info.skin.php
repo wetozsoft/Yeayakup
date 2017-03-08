@@ -10,7 +10,7 @@ while($row = sql_fetch_array($res)) {
     $arr_room[] = $row;
 }
 $cnt_room = count($arr_room);
-sql_free_result($res);
+if ($res) sql_free_result($res);
 ?>
 
 <div class="st3-form">

@@ -1,7 +1,7 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
-define('WZP_STATUS_VER', '0.2.3');
+define('WZP_STATUS_VER', '0.2.6');
 
 $g5['wzp_pension_table']        = G5_TABLE_PREFIX.'wzp_pension'; // 펜션기본정보 테이블
 $g5['wzp_booking_table']        = G5_TABLE_PREFIX.'wzp_booking'; // 예약정보 테이블
@@ -17,5 +17,5 @@ define('WZP_STATUS_HTTPS_URL',    G5_HTTPS_BBS_URL.'/board.php?bo_table='.$bo_ta
 define('WZP_PLUGIN_URL',    G5_PLUGIN_URL.'/wz.booking.pension');
 define('WZP_PLUGIN_PATH',   G5_PLUGIN_PATH.'/wz.booking.pension');
 
-$wzpconfig = sql_fetch(" select * from {$g5['wzp_pension_table']} ");
+$wzpconfig = sql_fetch(" select * from {$g5['wzp_pension_table']} ", false);
 ?>

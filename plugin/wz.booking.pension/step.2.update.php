@@ -34,6 +34,7 @@ $bk_email           = wz_get_email_address($bk_email);
 $bk_hp1             = preg_replace('/[^0-9]/', '', $bk_hp1);
 $bk_hp2             = preg_replace('/[^0-9]/', '', $bk_hp2);
 $bk_hp3             = preg_replace('/[^0-9]/', '', $bk_hp3);
+$bk_hp = '';
 if ($bk_hp1 && $bk_hp2 && $bk_hp3) { 
     $bk_hp = $bk_hp1 .'-'. $bk_hp2 .'-'. $bk_hp3;
 } 
@@ -61,6 +62,9 @@ $cnt_room   = count($arr_room);
 
 
 if ($cnt_room > 0) { 
+
+    sql_query("LOCK TABLE {$g5['wzp_room_status_table']} READ, LOCK TABLE {$g5['wzp_room_status_table']} WRITE ", false);
+
     for ($z = 0; $z < $cnt_room; $z++) { 
 
         $bk_day = $arr_room[$z]['bk_day'];
@@ -74,7 +78,7 @@ if ($cnt_room > 0) {
             $rms_day    = substr($rms_date, 8);
             
             // 예약이 가능한 날짜 확인.
-            $query = " select rms_ix, rms_status from {$g5['wzp_room_status_table']} where rm_ix = '$rm_ix' and rms_date = '$rms_date' ";
+            $query = " select rms_ix, rms_status from {$g5['wzp_room_status_table']} where rm_ix = '$rm_ix' and rms_date = '$rms_date' and rms_status <> '취소' ";
             $rms = sql_fetch($query);
             if ($rms['rms_status'] == '완료' || $rms['rms_status'] == '예약완료') { // 이미 예약중인 날짜라면.
                 $error_msg .= '\"'.$arr_room[$z]['rm_subject'].'\" 의 '.wz_get_hangul_date($rms_date).' 예약이 이미 완료된 예약객실로 예약이 불가능합니다.\\n잔여객실 확인 후 다시 예약바랍니다.\\n';
@@ -87,6 +91,7 @@ if ($cnt_room > 0) {
             
             // 오류가 없는경우에만 예약처리.
             if (!$error) { 
+
                 $query = "insert into {$g5['wzp_room_status_table']} set 
                         rm_ix       = '$rm_ix', 
                         rms_year    = '$rms_year', 
@@ -95,6 +100,7 @@ if ($cnt_room > 0) {
                         rms_date    = '$rms_date',
                         rms_status  = '대기' ";
                 $result = sql_query($query, false);
+
                 $rms_ix[] = (!defined('G5_MYSQLI_USE') ? mysql_insert_id() : sql_insert_id());
                 if (!$result) { 
                     $error_msg .= '\"'.$arr_room[$z]['rm_subject'].'\" 의 '.wz_get_hangul_date($rms_date).' 날짜 예약오류.\\n';
@@ -130,6 +136,8 @@ if ($cnt_room > 0) {
 
         $total_room += $arr_room[$z]['price_room'] + $arr_room[$z]['price_person'];
     }
+
+    sql_query("UNLOCK TABLES ", false);
     
 } 
 
@@ -206,12 +214,14 @@ if (!$error) {
         $query = "update {$g5['wzp_booking_room_table']} set bk_ix = '$bk_ix' where bkr_ix in (".$bkr_ix_list.") ";
         sql_query($query);
     }
+
     $uid = md5($od_id.G5_TIME_YMDHIS.$_SERVER['REMOTE_ADDR']);
     set_session('ss_orderview_uid', $uid);
     goto_url(WZP_STATUS_URL.'&mode=step3&od_id='.$od_id.'&amp;uid='.$uid);
 }
 else {
-
+    
+    $cancel_msg = '예약정보 등록오류';
     @include_once(WZP_PLUGIN_PATH.'/gender/pg.pay_cancel.php');
 
     if (is_array($rms_ix)) { // 객실상태정보 삭제.
