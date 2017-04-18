@@ -61,7 +61,6 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
                         <option value="">선택</option>
                         <option value="S" <?php echo $se['se_type'] == 'S' ? 'selected' : '';?>><?php echo wz_season_type_str('S');?></option>
                         <option value="F" <?php echo $se['se_type'] == 'F' ? 'selected' : '';?>><?php echo wz_season_type_str('F');?></option>
-                        <option value="H" <?php echo $se['se_type'] == 'H' ? 'selected' : '';?>><?php echo wz_season_type_str('H');?></option>
                     </select>
                 </td>
             </tr>

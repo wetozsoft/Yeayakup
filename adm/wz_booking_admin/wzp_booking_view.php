@@ -1,5 +1,5 @@
 <?php
-$sub_menu = '780300';
+$sub_menu = '780400';
 include_once('./_common.php');
 
 auth_check($auth[$sub_menu], "w");
@@ -7,6 +7,8 @@ auth_check($auth[$sub_menu], "w");
 $g5['title'] = '예약정보 상세보기';
 
 $bk_ix = (int)$_GET['bk_ix'];
+
+$qstr .= "&sfs=".$sfs."&sch_frdate1=".$sch_frdate1."&sch_todate1=".$sch_todate1;
 
 $sql = " select * from {$g5['wzp_booking_table']} where bk_ix = '$bk_ix' ";
 $bk = sql_fetch($sql);
@@ -173,12 +175,13 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
     <form method="post" name="frmpay" id="frmpay" action="./wzp_booking_form_update.php?<?php echo $qstr;?>">
     <input type="hidden" name="mode" value="pay">
     <input type="hidden" name="bk_ix" value="<?php echo $bk_ix ?>">
+    <input type="hidden" name="sfs" value="<?php echo $sfs ?>">
     <input type="hidden" name="bk_price" id="bk_price" value="<?php echo $bk['bk_price'];?>" />
 
     <div class="tbl_frm01 tbl_wrap">
         
         <table>
-        <caption>접속자집계 목록</caption>
+        <caption>결제정보</caption>
         <colgroup>
             <col width="15%">
             <col width="auto">
@@ -299,6 +302,7 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
     <form method="post" name="frminfo" id="frminfo" action="./wzp_booking_form_update.php?<?php echo $qstr;?>" onsubmit="return getAction(this);">
     <input type="hidden" name="mode" value="info">
     <input type="hidden" name="bk_ix" value="<?php echo $bk_ix ?>">
+    <input type="hidden" name="sfs" value="<?php echo $sfs ?>">
 
     <div class="tbl_frm01 tbl_wrap">
         <table>

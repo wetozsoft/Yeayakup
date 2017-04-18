@@ -1,5 +1,5 @@
 <?php
-$sub_menu = '780300';
+$sub_menu = '780400';
 include_once('./_common.php');
 
 check_demo();
@@ -7,6 +7,8 @@ check_demo();
 if (!count($_POST['chk'])) {
     alert($_POST['act_button']." 하실 항목을 하나 이상 체크하세요.");
 }
+
+$qstr .= "&sfs=".$sfs."&sch_frdate1=".$sch_frdate1."&sch_todate1=".$sch_todate1;
 
 if ($_POST['act_button'] == "선택삭제") {
 

@@ -252,6 +252,16 @@ if (empty($res)) {
     $db_reload = true;
 }
 
+// 2017-04-18 : 개별요금설정 매년 필드 추가.
+$query = "show columns from `{$g5['wzp_room_extend_price_table']}` like 'rmp_loop_year' ";
+$res = sql_fetch($query);
+if (empty($res)) {
+    sql_query(" ALTER TABLE `{$g5['wzp_room_extend_price_table']}` 
+                    ADD `rmp_loop_year` tinyint(4) NOT NULL
+                    ; ", true);
+    $db_reload = true;
+}
+
 if ($db_reload) { 
     alert("DB를 갱신합니다.", G5_ADMIN_URL.'/wz_booking_admin/wzp_config.php'); 
 } 

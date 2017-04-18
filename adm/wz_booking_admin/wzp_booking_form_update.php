@@ -1,5 +1,5 @@
 <?php
-$sub_menu = '780300';
+$sub_menu = '780400';
 include_once('./_common.php');
 
 auth_check($auth[$sub_menu], 'w');
@@ -11,6 +11,7 @@ if (isset($_REQUEST['bk_ix'])) {
     $bk_ix = '';
 }
 
+$qstr .= "&sfs=".$sfs."&sch_frdate1=".$sch_frdate1."&sch_todate1=".$sch_todate1;
 
 if ($mode == 'pay') { 
 
@@ -37,7 +38,8 @@ if ($mode == 'pay') {
 
     $sql = " select * from {$g5['wzp_booking_table']} where bk_ix = '$bk_ix' ";
     $bk = sql_fetch($sql);
-    $tno = $bk['bk_tno'];
+    $tno    = $bk['bk_tno'];
+    $od_id  = $bk['od_id'];
 
     // pg 결제처리.
     $pg_res_cd = '';
@@ -93,7 +95,7 @@ else if ($mode == 'info') {
     sql_query($sql);
 
 } 
-else if($mode == 'kd') { // 객실개별정보 삭제
+else if ($mode == 'kd') { // 객실개별정보 삭제
 
     $bkr_ix = (int)$_GET['bkr_ix'];
 
@@ -102,11 +104,13 @@ else if($mode == 'kd') { // 객실개별정보 삭제
     $bkr_misu = $bkr['bkr_price'] + $bkr['bkr_price_adult'];
     $bk_ix = $bkr['bk_ix'];
 
-    $query = "select bk_reserv_price, bk_misu, bk_status from {$g5['wzp_booking_table']} where bk_ix = '$bk_ix'";
+    $query = "select bk_receipt_price, bk_misu, bk_status from {$g5['wzp_booking_table']} where bk_ix = '$bk_ix'";
     $bk = sql_fetch($query);
+    $bk_receipt_price   = $bk['bk_receipt_price'];
     $bk_misu    = $bk['bk_misu'];
     $bk_status  = $bk['bk_status'];
-    if ($bk_status != '완료') { 
+
+    if ($bk_misu > 0 && $bkr_misu) { 
         $bk_misu = $bk_misu - $bkr_misu;
     } 
 
@@ -114,23 +118,24 @@ else if($mode == 'kd') { // 객실개별정보 삭제
     sql_query($query);
 
     $query = "delete from {$g5['wzp_booking_room_table']} where bkr_ix = '{$bkr['bkr_ix']}' ";
-    sql_query($query);  
+    sql_query($query);
 
-    // 삭제후 금액 재계산.
-    $query = "select sum(bkr_price + bkr_price_adult) as bkr_price, count(*) as cnt, bkr_subject from {$g5['wzp_booking_room_table']} where bk_ix = '$bk_ix'";
-    $row = sql_fetch($query);
+    // 삭제 후 금액 재계산.
+    $query = "select sum(bkr_price + bkr_price_adult) as bkr_price, sum(bkr_room_cnt) as cnt, bkr_subject from {$g5['wzp_booking_room_table']} where bk_ix = '$bk_ix'";
+    $bkr = sql_fetch($query);
 
-    $bk_reserv_price    = round(($row['bkr_price'] / 100) * ($wzpconfig['pn_reserv_price_avg'] ? $wzpconfig['pn_reserv_price_avg'] : 100));
+    $bk_price = $bkr['bkr_price'];
+    $bk_reserv_price = round(($bk_price / 100) * ($wzpconfig['pn_reserv_price_avg'] ? $wzpconfig['pn_reserv_price_avg'] : 100));
 
     $query = "update {$g5['wzp_booking_table']} set 
-                    bk_subject = '".$row['bkr_subject']. ($row['cnt']>1 ? ' 외'.($row['cnt']-1).'건' : '') ."', 
+                    bk_subject = '".$bkr['bkr_subject']. ($bkr['cnt']>1 ? ' 외'.($bkr['cnt']-1).'건' : '') ."', 
                     bk_cnt_room = '".$row['cnt']."', 
-                    bk_price = '".$row['bkr_price']."',
+                    bk_price = '".$bk_price."',
+                    bk_receipt_price = '".$bk_receipt_price."',
                     bk_reserv_price = '".$bk_reserv_price."',
                     bk_misu = '".$bk_misu."'
             where bk_ix = '{$bk_ix}' ";
     sql_query($query);
-
 
 }
 

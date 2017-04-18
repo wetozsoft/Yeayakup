@@ -1,1 +1,34 @@
 .td_alignc {text-align:center}
+span.vbar {padding: 0 2px;color:#828282;font-size:10px;}
+hr.section-division {display:block;visibility:hidden;clear:both;content:'';height:10px;padding:0;margin:0;}
+
+/* ºñ°í */
+.sim-bx{float:left}
+.sim-bx .bx-hd{width:127px;height:26px;line-height:26px;border:1px solid #cccccc;background:#f5f5f5}
+.sim-bx .bx-hd p{text-align:center;letter-spacing:-1px;font-size: 11px;padding:4px 0}
+.sim-bx .bx-ft{width:127px;border:1px solid #cccccc;border-top:0}
+.sim-bx .bx-ft p{text-align:center;letter-spacing:-1px;font-size: 11px;background-color:#fff;padding:10px 0;}
+.sim-bx .bx-ft p.important{font-size:12px;letter-spacing:0;}
+.next_box {background:url(./img/ico-calc.png) no-repeat;width:23px;height:23px;display:inline-block;float:left;margin:17px 14px 0 14px}
+.next_box.plus {background-position: 0 0;}
+.next_box.minus {background-position: -46px 0;}
+.next_box.equal {background-position: -46px 0;}
+.blank_box {width:5px;height:13px;display:inline-block;float:left;margin:21px 10px 0 10px}
+.sim-bx.auto .bx-hd {width:auto;}
+.sim-bx.auto .bx-ft {width:auto;line-height:auto;height:auto;}
+
+/* helpguide */
+.help_section table{width:100%;border:0;border-bottom:1px solid #dadada;border-right:1px solid #dadada;border-spacing:0;table-layout:fixed}
+.help_section table td,.help_section table th{border:0;border-top:1px solid #dadada;border-left:1px solid #dadada;color:#333}
+.help_section table th{background-color:#f2f4f5;vertical-align:top}
+.help_section table td{background-color:#fff;vertical-align:top}
+.help_section table .inner{overflow:hidden;border-top:1px solid #fff;letter-spacing:-1px;text-align:left}
+.help_section table th .inner{padding:15px 0 0 11px;border-left:1px solid #fff}
+.help_section .faq_lst{overflow:hidden;margin:11px 40px 11px 11px;line-height:20px;padding:0;}
+.help_section .faq_lst li{overflow:hidden;padding-left:8px;background:url(./img/bu_dot4.png) no-repeat 1px 8px}
+.help_section .faq_lst li a{color:#333;text-decoration:none}
+.help_section .faq_lst li a.tx{text-decoration:underline}
+.help_section .faq_lst p{display:inline-block;float:left}
+
+.rm-cnt-view {font-weight:bold;text-decoration:underline;color:red;}
+button.btn-sm1 {margin:0;padding:5px;border:1px solid #ced9de;background:#f6f9fa;font-size:0.95em;vertical-align:middle;cursor:pointer}

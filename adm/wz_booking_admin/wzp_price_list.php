@@ -110,6 +110,8 @@ $colspan = 5;
     <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value">
 </div>
 
+<?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr.'&amp;page='); ?>
+
 </form>
 
 <script type="text/javascript">

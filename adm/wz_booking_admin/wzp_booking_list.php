@@ -1,5 +1,5 @@
 <?php
-$sub_menu = '780300';
+$sub_menu = '780400';
 include_once('./_common.php');
 
 auth_check($auth[$sub_menu], "r");
@@ -17,6 +17,26 @@ if ($stx) {
     }
     $sql_search .= " ) ";
 }
+
+if ($sfs) { 
+    switch ($sfs) {
+        case "완료":
+            $sql_search .= " and (bk_status = '예약완료' or bk_status = '완료') ";
+            break;
+        case "취소":
+            $sql_search .= " and (bk_status = '예약취소' or bk_status = '취소') ";
+            break;
+        default :
+            $sql_search .= " and (bk_status = '예약대기' or bk_status = '대기') ";
+            break;
+    }
+    $qstr .= "&sfs=".$sfs;
+} 
+
+if ($sch_frdate1 && $sch_todate1) { 
+    $sql_search .= " and bk_ix in (select bk_ix from {$g5['wzp_booking_room_table']} where bkr_frdate <= '{$sch_todate1}' AND bkr_todate > '{$sch_frdate1}') ";
+    $qstr .= "&sch_frdate1=".$sch_frdate1."&sch_todate1=".$sch_todate1;
+} 
 
 if (!$sst) {
     $sst = "bk_ix";
@@ -40,6 +60,7 @@ $result = sql_query($sql);
 
 $g5['title'] = '예약정보 관리';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
+include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 
 $colspan = 13;
 ?>
@@ -53,8 +74,25 @@ $colspan = 13;
     전체 <?php echo number_format($total_count) ?>개
 </div>
 
-<form name="fsearch" id="fsearch" class="local_sch01 local_sch" method="get">
-<label for="sfl" class="sound_only">검색대상</label>
+<form name="fsearch" id="fsearch" class="local_sch02 local_sch" method="get" onsubmit="return getSearch(this);">
+
+<div>
+    <strong>숙박일</strong>
+    <input type="text" name="sch_frdate1" id="sch_frdate1" value="<?php echo $sch_frdate1;?>" class="frm_input" style="width:100px;" maxlength="10" /> ~ 
+    <input type="text" name="sch_todate1" id="sch_todate1" value="<?php echo $sch_todate1;?>" class="frm_input" style="width:100px;" maxlength="10" />
+</div>
+<div>
+    <strong>예약상태</strong>
+<select name="sfs" id="sfs">
+    <option value=""<?php echo get_selected($_GET['sfs'], ""); ?>>전체</option>
+    <option value="대기"<?php echo get_selected($_GET['sfs'], "대기"); ?>>대기</option>
+    <option value="완료"<?php echo get_selected($_GET['sfs'], "완료"); ?>>완료</option>
+    <option value="취소"<?php echo get_selected($_GET['sfs'], "취소"); ?>>취소</option>
+</select>
+</div>
+<div class="sch_last">
+    <strong>단어검색</strong>
+    
 <select name="sfl" id="sfl">
     <option value="bk_name"<?php echo get_selected($_GET['sfl'], "bk_name"); ?>>예약자명</option>
     <option value="bk_hp"<?php echo get_selected($_GET['sfl'], "bk_hp"); ?>>핸드폰</option>
@@ -65,7 +103,8 @@ $colspan = 13;
 <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="stx" value="<?php echo $stx ?>" class="frm_input">
 <input type="submit" value="검색" class="btn_submit">
-</fieldset>
+<input type="button" value="엑셀다운로드" class="btn_submit" onclick="getExcel(document.forms.fsearch);">
+</div>
 </form>
 
 <form name="frm" id="frm" method="post" action="./wzp_booking_list_update.php" onsubmit="return getAction(this);">
@@ -74,6 +113,10 @@ $colspan = 13;
 <input type="hidden" name="sfl" value="<?php echo $sfl ?>">
 <input type="hidden" name="stx" value="<?php echo $stx ?>">
 <input type="hidden" name="page" value="<?php echo $page ?>">
+
+<input type="hidden" name="sfs" value="<?php echo $sfs ?>">
+<input type="hidden" name="sch_frdate1" value="<?php echo $sch_frdate1 ?>">
+<input type="hidden" name="sch_todate1" value="<?php echo $sch_todate1 ?>">
 
 <div class="tbl_head01 tbl_wrap">
     <table>
@@ -91,7 +134,7 @@ $colspan = 13;
         <th width="230px" scope="col">결제상태</th>
         <th width="90px" scope="col">결제방식</th>
         <th width="100px" scope="col">핸드폰번호</th>
-        <th width="120px" scope="col">날짜</th>
+        <th width="100px" scope="col">날짜</th>
         <th width="50px" scope="col">상태</th>
     </tr>
     </thead>
@@ -99,7 +142,7 @@ $colspan = 13;
     <?php
     for ($i=0; $row=sql_fetch_array($result); $i++) {
         
-        $query2 = "select * from {$g5['wzp_booking_room_table']} where bk_ix = '{$row['bk_ix']}' "; // 객실정보
+        $query2 = "select * from {$g5['wzp_booking_room_table']} where bk_ix = '{$row['bk_ix']}' order by rm_ix asc "; // 객실정보
         $result2 = sql_query($query2);
 
         $bg  = 'bg'.($i%2);
@@ -126,7 +169,16 @@ $colspan = 13;
         </td>
         <td class="td_alignc"><?php echo $row['bk_payment']; ?></td>
         <td class="td_alignc"><?php echo $row['bk_hp']; ?></td>
-        <td class="td_alignc"><?php echo $row['bk_time']; ?></td>
+        <td class="td_alignc">
+            <?php 
+            if ($row['bk_status'] == '대기') { 
+                echo wz_convert_time_last($row['bk_time']).' 경과';
+            } 
+            else {
+                echo substr($row['bk_time'], 0, 10); 
+            }
+            ?>
+        </td>
         <td class="td_alignc"><?php echo $row['bk_status']; ?></td>
     </tr>
 
@@ -153,6 +205,9 @@ $colspan = 13;
 
 <script type="text/javascript">
 <!--
+    $(function(){
+        $("#sch_frdate1, #sch_todate1").datepicker({ changeMonth: true, changeYear: true, dateFormat: "yy-mm-dd", showButtonPanel: true, yearRange: "c-5:c+2"});
+    });
     function getAction(f)
     {
         if (!is_checked("chk[]")) {
@@ -182,6 +237,14 @@ $colspan = 13;
         }
 
         return true;
+    }
+    function getSearch(f) {
+        f.action = "./wzp_booking_list.php";
+    }
+    function getExcel(f) {
+        f.action = "./wzp_booking_excel.php";
+        f.target = "_self";
+        f.submit();
     }
 //-->
 </script>

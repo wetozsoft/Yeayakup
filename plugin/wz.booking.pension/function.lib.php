@@ -223,7 +223,7 @@ function wz_calculate_season($rm, $dt) {
     // 객실 최우선적용정보
     $query = "  select * from {$g5['wzp_room_extend_price_table']} 
                 where rm_ix = '{$rm['rm_ix']}' 
-                and (rmp_date = '{$dt['date']}' or (rmp_loop_year = 1 and rmp_month = '".$rmp_month."' and rmp_day = '".$rmp_day."')) ";
+                and (rmp_date = '{$dt['date']}' or (rmp_loop_year = 1 and rmp_month = '".$rmp_month."' and rmp_day = '".$rmp_day."')) order by rmp_ix desc limit 1 ";
     $rmp = sql_fetch($query);
     if ($rmp['rmp_ix']) {
         $price = $rmp['rmp_price'];
